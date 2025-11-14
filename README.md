@@ -2,168 +2,224 @@
 
 A comprehensive digital court system powered by Google's Gemini 2.5 Flash AI, featuring real-time case management, document analysis, and intelligent legal reasoning.
 
-## 🏛️ Overview
 
-The AI Judge System is a modern web application that simulates court proceedings using artificial intelligence. It allows users to create legal cases, submit evidence from both sides, and receive AI-generated verdicts based on legal analysis. The system supports continuous argumentation and real-time updates, making it an excellent tool for legal education, case analysis, and dispute resolution simulation.
 
-## ✨ Features
-
-### Core Functionality
-- **AI-Powered Legal Analysis**: Uses Google Gemini 2.5 Flash for intelligent case evaluation
-- **Multi-Format Document Processing**: Supports PDF, DOC, DOCX, and TXT files
-- **Real-Time Case Updates**: WebSocket integration for live updates
-- **Adversarial System**: Two-sided case presentation (Plaintiff vs Defendant)
-- **Interactive Arguments**: Lawyers can present follow-up arguments and receive AI responses
-- **Verdict Generation**: Comprehensive AI verdicts with legal reasoning and confidence scores
-- **Case Management**: Full CRUD operations for case data
-- **Responsive Design**: Modern black/white minimalist UI with animations
-
-### Advanced Features
-- **GooeyNav Animation**: Particle-based navigation with morphing effects
-- **Dashboard Analytics**: Case statistics and performance metrics
-- **Status Tracking**: Real-time case status updates
-- **Document Validation**: File type and size validation
-- **Error Handling**: Comprehensive error management throughout the system
-- **Hidden Scrollbars**: Clean UI with functional but invisible scrollbars
 
 ## 🏗️ Architecture
 
-### Backend (Node.js/Express)
+### Backend Structure
 ```
 backend/
-├── index.js                 # Main server file
+├── index.js                    # Express server with Socket.IO
+├── config/
+│   ├── database.js            # MongoDB connection
+│   ├── multer.js              # File upload configuration
+│   └── supabase.js            # Supabase client setup
+├── models/
+│   └── Case.js                # MongoDB case schema
+├── routes/
+│   ├── case.js                # Individual case operations
+│   ├── cases.js               # Multiple cases & statistics
+│   └── upload.js              # Document upload endpoints
 ├── services/
-│   ├── geminiService.js     # AI integration service
-│   ├── caseService.js       # Case data management
-│   └── documentParser.js    # Document processing
-├── uploads/                 # File upload storage
-├── data/                   # JSON data persistence
-└── .env                    # Environment configuration
+│   ├── geminiService.js       # AI integration service
+│   ├── caseService.js         # Case data management
+│   └── documentParser.js      # Document processing
+├── scripts/
+│   ├── seedDatabase.js        # Database seeding
+│   └── migrateToCloud.js      # Cloud migration utility
+└── .env                       # Environment configuration
 ```
 
-### Frontend (React/Vite)
+### Frontend Structure
 ```
 frontend/
 ├── src/
-│   ├── components/          # React components
-│   │   ├── Dashboard.jsx    # Main dashboard
-│   │   ├── GooeyNav.jsx     # Animated navigation
-│   │   ├── Header.jsx       # App header
-│   │   └── ...
-│   ├── stores/             # Zustand state management
+│   ├── components/            # React components
+│   │   ├── Dashboard.jsx      # Main dashboard with analytics
+│   │   ├── CaseView.jsx       # Case management & document upload
+│   │   ├── CreateCase.jsx     # Case creation form
+│   │   ├── GooeyNav.jsx       # Animated navigation
+│   │   └── Header.jsx         # App header
+│   ├── stores/               # Zustand state management
 │   │   └── useAIJudgeStore.js
-│   ├── index.css           # Global styles
-│   └── App.jsx             # Main app component
-├── public/                 # Static assets
-└── package.json           # Frontend dependencies
+│   ├── index.css             # Global Tailwind styles
+│   ├── App.jsx               # Main app component
+│   └── main.jsx              # React entry point
+├── public/                   # Static assets
+├── vite.config.js            # Vite configuration
+└── package.json              # Frontend dependencies
 ```
 
-## 🚀 Quick Start
 
-### Prerequisites
-- Node.js (v18 or higher)
-- NPM or Yarn
-- Google Gemini API key
 
-### Installation
+## 🚀 Installation & Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd abc
-   ```
+### 1. Clone the Repository
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   npm install
-   
-   # Create environment file
-   cp .env.example .env
-   # Edit .env and add your GEMINI_API_KEY
-   ```
+```bash
+git clone https://github.com/nithinmouli/venky.git
+cd venky
+```
 
-3. **Frontend Setup**
-   ```bash
-   cd ../frontend
-   npm install
-   ```
+### 2. Backend Setup
 
-4. **Start Development Servers**
-   
-   Terminal 1 (Backend):
-   ```bash
-   cd backend
-   npm run dev
-   ```
-   
-   Terminal 2 (Frontend):
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+```bash
+# Navigate to backend directory
+cd backend
 
-5. **Access Application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3001
+# Install dependencies
+npm install
 
-## ⚙️ Configuration
+# Create environment file
+cp .env.example .env
+```
 
-### Environment Variables (.env)
+### 3. Environment Configuration
+
+Create a `.env` file in the `backend` directory with the following configuration:
 
 ```bash
 # Google Gemini API Configuration
 GEMINI_API_KEY=your_gemini_api_key_here
 
+# MongoDB Configuration
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority
+
 # Server Configuration
 PORT=3001
 NODE_ENV=development
 
-# File Upload Limits
-MAX_FILE_SIZE=10485760  # 10MB in bytes
+# Upload Configuration
+MAX_FILE_SIZE=10485760
 
-# CORS Configuration
+# Supabase Configuration
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+STORAGE_BUCKET=your_bucket_name
+
+# Frontend URL (for CORS)
 FRONTEND_URL=http://localhost:5173
 ```
 
-### Getting a Gemini API Key
+### 4. Get Required API Keys
 
+#### Google Gemini API Key:
 1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
 2. Sign in with your Google account
-3. Create a new API key
-4. Copy the key to your `.env` file
+3. Click "Create API Key"
+4. Copy the generated key to your `.env` file
+
+#### MongoDB Connection:
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a new cluster (free tier available)
+3. Go to Database Access → Add Database User
+4. Go to Network Access → Add IP Address (0.0.0.0/0 for development)
+5. Go to Database → Connect → Connect your application
+6. Copy the connection string and update your `.env` file
+
+#### Supabase Configuration:
+1. Create account at [Supabase](https://supabase.com/)
+2. Create a new project
+3. Go to Settings → API to get your URL and service role key
+4. Go to Storage → Create a new bucket for file uploads
+5. Update your `.env` file with these values
+
+### 5. Frontend Setup
+
+```bash
+# Navigate to frontend directory (from project root)
+cd frontend
+
+# Install dependencies
+npm install
+```
+
+### 6. Database Setup (Optional)
+
+If you want to seed the database with sample data:
+
+```bash
+# From backend directory
+npm run seed
+```
+
+## 🏃‍♂️ Running the Application
+
+### Development Mode
+
+You'll need **two terminal windows**:
+
+#### Terminal 1 - Backend Server:
+```bash
+cd backend
+npm run dev
+```
+The backend server will start on `http://localhost:3001`
+
+#### Terminal 2 - Frontend Development Server:
+```bash
+cd frontend
+npm run dev
+```
+The frontend will start on `http://localhost:5173`
+
+### Production Mode
+
+#### Build Frontend:
+```bash
+cd frontend
+npm run build
+```
+
+#### Start Production Server:
+```bash
+cd backend
+npm start
+```
+
+## 🔗 Application URLs
+
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3001
+- **Health Check**: http://localhost:3001/api/health
 
 ## 📋 Usage Workflow
 
 ### Creating a Case
 
-1. **Access Dashboard**: Navigate to the main dashboard
+1. **Access Dashboard**: Navigate to http://localhost:5173
 2. **Create New Case**: Click "Create Case" button
 3. **Fill Case Details**:
-   - Case title
+   - Case title (e.g., "Software Contract Dispute")
    - Description
    - Case type (Civil, Criminal, Corporate, etc.)
    - Jurisdiction/Country
    - Plaintiff (Side A) description
    - Defendant (Side B) description
 
-4. **Submit Documents**:
-   - Upload supporting documents for each side
+### Document Upload Process
+
+1. **Navigate to Case**: Click on a case from the dashboard
+2. **Upload Documents**: 
+   - Drag and drop files or click to browse
    - Supported formats: PDF, DOC, DOCX, TXT
    - Maximum file size: 10MB per file
-   - Documents are automatically processed and text extracted
+   - Add optional descriptions for document context
+3. **Automatic Processing**: Documents are processed and text is extracted
+4. **Status Updates**: Case status automatically changes when both sides have evidence
 
 ### AI Judgment Process
 
-1. **Document Analysis**: AI analyzes all submitted documents
-2. **Legal Research**: Applies relevant laws and legal principles
-3. **Verdict Generation**: Creates structured verdict with:
-   - Decision (favor_side_a, favor_side_b, split_decision, insufficient_evidence)
-   - Detailed legal reasoning
+1. **Ready for Judgment**: When both sides have uploaded documents
+2. **Request Verdict**: Click "Analyze Case & Render Verdict"
+3. **AI Analysis**: System sends case data to Gemini AI for analysis
+4. **Verdict Display**: Receive comprehensive verdict with:
+   - Legal decision
+   - Detailed reasoning
    - Key factual findings
    - Applicable legal principles
-   - Damages/remedies (if applicable)
-   - Confidence score (0.0-1.0)
+   - Confidence score (0-100%)
 
 ### Follow-up Arguments
 
@@ -173,95 +229,81 @@ FRONTEND_URL=http://localhost:5173
    - Make minor modifications
    - Significantly change verdict
    - Completely reverse decision
-3. **Real-time Updates**: All participants see updates immediately
-
-### Case Status Flow
-
-1. **Created** → Initial case creation
-2. **Awaiting Documents** → Waiting for evidence submission
-3. **Ready for Judgment** → All documents submitted, ready for AI analysis
-4. **Arguments Phase** → Active argumentation period
-5. **Verdict Rendered** → Final decision issued
+3. **Real-time Updates**: All changes appear immediately via WebSocket
 
 ## 🔧 API Endpoints
 
-### Cases
-- `POST /api/cases` - Create new case
+### Case Management
+- `POST /api/case/create` - Create new case
+- `GET /api/case/:id` - Get specific case details
+- `POST /api/case/:id/judge` - Request AI verdict
+- `POST /api/case/:id/argue` - Submit legal argument
+
+### Cases & Statistics
 - `GET /api/cases` - List all cases
-- `GET /api/cases/:id` - Get specific case
-- `PUT /api/cases/:id` - Update case
-- `DELETE /api/cases/:id` - Delete case
+- `GET /api/cases/search` - Search cases with criteria
+- `GET /api/cases/stats` - Get system statistics
 
-### Documents
-- `POST /api/cases/:id/documents` - Upload documents
-- `GET /api/cases/:id/documents` - List case documents
-
-### AI Interactions
-- `POST /api/cases/:id/generate-verdict` - Generate AI verdict
-- `POST /api/cases/:id/arguments` - Submit argument and get AI response
+### Document Upload
+- `POST /api/upload/side-a` - Upload documents for plaintiff
+- `POST /api/upload/side-b` - Upload documents for defendant
 
 ### System
-- `GET /api/health` - Health check
+- `GET /api/health` - Health check endpoint
 - `GET /api/stats` - System statistics
 
-## 🎨 UI/UX Features
-
-### Design System
-- **Color Scheme**: Minimalist black/white design
-- **Typography**: Inter font family with bold headings
-- **Spacing**: Consistent grid-based layout
-- **Animations**: Smooth transitions and particle effects
-
-### Interactive Elements
-- **GooeyNav**: Particle-based navigation with morphing backgrounds
-- **Glass Cards**: Translucent cards with backdrop blur effects
-- **Hover Effects**: Subtle animations on interactive elements
-- **Loading States**: Spinner animations during processing
-- **Status Indicators**: Color-coded status badges
-
-### Accessibility
-- **Keyboard Navigation**: Full keyboard support
-- **Screen Readers**: Semantic HTML and ARIA labels
-- **Color Contrast**: High contrast for readability
-- **Responsive Design**: Works on desktop, tablet, and mobile
-
-## 🧪 Development
+## 🛠️ Development
 
 ### Code Organization
 
 **Backend Services**:
 - `geminiService.js`: AI integration and prompt engineering
-- `caseService.js`: Data persistence and case management
+- `caseService.js`: Database operations and case management
 - `documentParser.js`: File processing and text extraction
 
 **Frontend Components**:
 - `Dashboard.jsx`: Main analytics and case overview
+- `CaseView.jsx`: Individual case management, document upload, and verdict interaction
+- `CreateCase.jsx`: Case creation form with validation
 - `GooeyNav.jsx`: Animated navigation component
-- `CaseDetail.jsx`: Individual case view and interaction
-- `CreateCase.jsx`: Case creation form
 
 **State Management**:
 - Zustand store for global state
 - Real-time WebSocket updates
 - Optimistic UI updates
 
-### Testing
+### Available Scripts
 
+#### Backend:
 ```bash
-# Backend tests
-cd backend
-npm test
-
-# Frontend tests  
-cd frontend
-npm test
-
-# End-to-end tests
-npm run test:e2e
+npm start          # Start production server
+npm run dev        # Start development server with nodemon
+npm run seed       # Seed database with sample data
+npm run migrate:cloud  # Migrate files to cloud storage
 ```
 
-### Building for Production
+#### Frontend:
+```bash
+npm run dev        # Start Vite development server
+npm run build      # Build for production
+npm run preview    # Preview production build
+npm run lint       # Run ESLint
+```
 
+
+
+
+### Environment Setup
+```bash
+NODE_ENV=production
+GEMINI_API_KEY=your_production_key
+MONGO_URI=your_production_mongodb_uri
+SUPABASE_URL=your_production_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_production_key
+PORT=3001
+```
+
+### Build Process
 ```bash
 # Build frontend
 cd frontend
@@ -271,124 +313,3 @@ npm run build
 cd backend
 npm start
 ```
-
-## 📊 System Requirements
-
-### Minimum Requirements
-- Node.js 18.0+
-- 2GB RAM
-- 1GB storage space
-- Google Gemini API access
-
-### Recommended
-- Node.js 20.0+
-- 4GB RAM
-- 5GB storage space
-- High-speed internet connection
-
-## 🔒 Security Considerations
-
-- **API Key Security**: Keep Gemini API key secure and rotate regularly
-- **File Upload Validation**: Strict file type and size validation
-- **Input Sanitization**: All user inputs are sanitized
-- **Rate Limiting**: Consider implementing rate limiting for API calls
-- **CORS Configuration**: Properly configured CORS policies
-- **Environment Variables**: Never commit sensitive data to version control
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**1. API Key Errors**
-```
-Error: Gemini API not configured
-```
-- Solution: Ensure `GEMINI_API_KEY` is set in `.env` file
-
-**2. File Upload Failures**
-```
-Error: File too large
-```
-- Solution: Check `MAX_FILE_SIZE` configuration and file size limits
-
-**3. Document Processing Errors**
-```
-Error: Failed to extract text from document
-```
-- Solution: Ensure file is not corrupted and is in supported format
-
-**4. WebSocket Connection Issues**
-```
-Error: WebSocket connection failed
-```
-- Solution: Check backend server is running and CORS is properly configured
-
-### Debug Mode
-Set `NODE_ENV=development` for detailed error logging.
-
-## 🚀 Deployment
-
-### Production Deployment
-
-1. **Environment Setup**
-   ```bash
-   NODE_ENV=production
-   GEMINI_API_KEY=your_production_key
-   PORT=3001
-   ```
-
-2. **Build Frontend**
-   ```bash
-   cd frontend
-   npm run build
-   ```
-
-3. **Start Production Server**
-   ```bash
-   cd backend
-   npm start
-   ```
-
-### Docker Deployment (Optional)
-
-```dockerfile
-# Dockerfile example
-FROM node:18-alpine
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY . .
-EXPOSE 3001
-
-CMD ["npm", "start"]
-```
-
-## 📝 License
-
-This project is licensed under the ISC License. See the LICENSE file for details.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📞 Support
-
-For support, please open an issue on the repository or contact the development team.
-
-## 🔄 Version History
-
-### v1.0.0 (Current)
-- Initial release with core AI Judge functionality
-- Modern React frontend with animations
-- Google Gemini 2.5 Flash integration
-- Real-time WebSocket updates
-- Multi-format document processing
-- Comprehensive case management
-
----
